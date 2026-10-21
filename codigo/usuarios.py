@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-
 class Estudante(ABC):
     #Classe abstrata para Aluno e Monitor
     
@@ -28,13 +27,11 @@ class Estudante(ABC):
     @abstractmethod
     def pode_reservar(self, horario):
         pass
-        #aluno -> valida se o horario está disponivel
-        #monitor -> valida também se a materia não é a do monitor  
         
 class Aluno(Estudante):
     def pode_reservar(self, horario):
         return True
-            
+
 class Monitor(Estudante):
     #aluno com a materia da monitoria
     
