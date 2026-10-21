@@ -1,19 +1,16 @@
-#from materia import carregar_materias
+from materia import carregar_materias
+from menu import fazer_login, criar_usuario, menu
 
 def main():
-    
-    while(1):
-        print("Bem vindo ao sistema de agendamento de monitorias!/n")
-        print("Faça login no sistema para continuar./n")
-        login = input("Digite seu login: ")
-        senha = input("Digite sua senha: ")
-    
-    # materias = carregar_materias("disciplinas.csv")
+    print("Bem vindo ao sistema de agendamento de monitorias!\n")
+    print("Faça login no sistema para continuar.")
+    dados = fazer_login()
 
-    # for m in materias:
-    #     print(m.nome, "-", len(m.topicos), "tópicos")
-    
-    
+    materias = carregar_materias("disciplinas.csv")
+    usuario = criar_usuario(dados, materias)
+    menu(usuario, materias)
+
+
 
 if __name__ == "__main__":
     main()

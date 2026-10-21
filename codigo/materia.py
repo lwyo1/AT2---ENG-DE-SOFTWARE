@@ -1,4 +1,5 @@
 import csv
+import time
 
 class Materia:
     def __init__(self, nome, topicos):
