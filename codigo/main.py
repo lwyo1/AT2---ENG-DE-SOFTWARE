@@ -56,35 +56,37 @@ def adicionar_horarios_demo(materias, arquivo_usuarios):
 
 
 def main():
-    print("Bem vindo ao sistema de agendamento de monitorias!\n")
-    print("Faça login no sistema para continuar.")
-    dados = fazer_login(PASTA_CODIGO / "usuarios.csv")
-
     arquivo_usuarios = PASTA_CODIGO / "usuarios.csv"
     arquivo_horarios = PASTA_CODIGO / "horarios.csv"
     arquivo_reservas = PASTA_CODIGO / "reservas.csv"
-    materias = carregar_materias(PASTA_CODIGO / "disciplinas.csv")
-    usuario = criar_usuario(dados, materias)
-    horarios_carregados = carregar_horarios(
-        materias,
-        arquivo_horarios,
-        arquivo_reservas,
-        arquivo_usuarios,
-        usuario,
-    )
-    if not horarios_carregados:
-        adicionar_horarios_demo(materias, arquivo_usuarios)
-    salvar_horarios(materias, arquivo_horarios, arquivo_reservas)
 
-    menu(
-        usuario,
-        materias,
-        salvar_estado=lambda: salvar_horarios(
+    while True:
+        print("Bem vindo ao sistema de agendamento de monitorias!\n")
+        print("Faça login no sistema para continuar.")
+        dados = fazer_login(arquivo_usuarios)
+
+        materias = carregar_materias(PASTA_CODIGO / "disciplinas.csv")
+        usuario = criar_usuario(dados, materias)
+        horarios_carregados = carregar_horarios(
             materias,
             arquivo_horarios,
             arquivo_reservas,
-        ),
-    )
+            arquivo_usuarios,
+            usuario,
+        )
+        if not horarios_carregados:
+            adicionar_horarios_demo(materias, arquivo_usuarios)
+        salvar_horarios(materias, arquivo_horarios, arquivo_reservas)
+
+        menu(
+            usuario,
+            materias,
+            salvar_estado=lambda: salvar_horarios(
+                materias,
+                arquivo_horarios,
+                arquivo_reservas,
+            ),
+        )
 
 
 
