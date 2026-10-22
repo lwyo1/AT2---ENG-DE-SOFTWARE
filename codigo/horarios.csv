@@ -1,0 +1,6 @@
+id,monitor_ra,materia,data,hora,tipo,capacidade,status
+83f7e073ab87478f839a089759a8833f,2655120,Cálculo 1,26/10/2026,09:00,Individual,1,livre
+635ef027539a41b8b3847d37746375db,2655120,Cálculo 1,27/10/2026,10:00,Grupo,3,livre
+73a67ada91c34704b45c6cde8f83716b,2655120,Cálculo 1,28/10/2026,11:00,Individual,1,cancelado
+9516ef623ed947eb849dedbb9fbbe159,2655120,Cálculo 1,29/10/2026,13:00,Individual,1,lotado
+6cc766120022460fb09420a71bd5fde2,2655120,Cálculo 1,21/12/2026,20:00,Individual,1,livre

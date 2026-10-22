@@ -1,7 +1,6 @@
 import csv
 from datetime import datetime
 from pathlib import Path
-from uuid import uuid4
 
 from horario import Horario
 from reserva import Reserva
@@ -44,7 +43,7 @@ def carregar_horarios(
 
     horarios_por_id = {}
     with open(arquivo_horarios, "r", encoding="utf-8", newline="") as arquivo:
-        for dados in csv.DictReader(arquivo):
+        for proximo_id, dados in enumerate(csv.DictReader(arquivo), start=1):
             materia = materias_por_nome[dados["materia"]]
             horario = Horario(
                 materia,
@@ -55,11 +54,12 @@ def carregar_horarios(
                 ),
                 int(dados["capacidade"]),
             )
-            horario.id = dados["id"]
+            id_salvo = dados["id"]
+            horario.id = proximo_id
             if dados["status"] == "cancelado":
                 horario.cancelar()
             materia.adicionar_horario(horario)
-            horarios_por_id[horario.id] = horario
+            horarios_por_id[id_salvo] = horario
 
     arquivo_reservas = Path(arquivo_reservas)
     if arquivo_reservas.exists():
@@ -80,10 +80,19 @@ def carregar_horarios(
 def salvar_horarios(materias, arquivo_horarios, arquivo_reservas):
     linhas_horarios = []
     linhas_reservas = []
+    ids_existentes = [
+        horario.id
+        for materia in materias
+        for horario in materia.horarios
+        if isinstance(horario.id, int)
+    ]
+    proximo_id = max(ids_existentes, default=0) + 1
+
     for materia in materias:
         for horario in materia.horarios:
-            if not hasattr(horario, "id"):
-                horario.id = uuid4().hex
+            if horario.id is None:
+                horario.id = proximo_id
+                proximo_id += 1
             status = (
                 "cancelado"
                 if horario.cancelado
