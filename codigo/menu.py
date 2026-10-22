@@ -5,6 +5,7 @@ from agendamento import ReservaInvalida, marcar_horario
 from horario import Horario
 from tela import desenhar_grade
 from usuarios import Aluno, Monitor
+import sys
 
 
 def login(ra, senha, arq="usuarios.csv"):
@@ -44,7 +45,10 @@ def menu(usuario, materias, salvar_estado=None):
         print("3 - Minhas reservas")
         if isinstance(usuario, Monitor):
             print("4 - Cadastrar horário de monitoria")
-        print("0 - Sair")
+            print("5 - Fechar o programa")
+        else:
+            print("4 - Fechar o programa")
+        print("0 - Trocar usuario")
         opcao = input("Escolha: ")
 
         if opcao == "1":
@@ -55,6 +59,9 @@ def menu(usuario, materias, salvar_estado=None):
             mostrar_reservas(usuario)
         elif opcao == "4" and isinstance(usuario, Monitor):
             cadastrar_horario_monitoria(usuario, salvar_estado)
+        elif (opcao == "4" and isinstance(usuario, Aluno)) or (opcao == "5" and isinstance(usuario, Monitor)):
+            print("Saindo do programa...")
+            sys.exit()
         elif opcao == "0":
             break
         else:
