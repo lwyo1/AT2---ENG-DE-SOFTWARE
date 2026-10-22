@@ -1,1 +1,4 @@
 __pycache__/
+codigo/horarios.csv
+codigo/reservas.csv
+*.tmp

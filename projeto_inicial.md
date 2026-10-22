@@ -5,14 +5,14 @@ Como aluno, eu quero selecionar uma das disciplinas e marcar um horário de moni
 
 ## Classes e responsabilidades
 
-Todo o código fica na pasta `codigo/`, em Python, sem interface gráfica. Os dados ficam em memória (listas dentro dos objetos), sem banco de dados.
+Todo o código fica na pasta `codigo/`, em Python, sem interface gráfica. Os dados ficam em memória (listas dentro dos objetos), sem banco de dados. Como extra para a demonstração, os horários e as reservas são salvos em arquivos CSV a cada reserva ou cadastro de horário (`persistencia.py`).
 
 - **Materia** (`materia.py`): guarda o nome da disciplina, a lista de tópicos do conteúdo a partir de um leitor de CSV com esses dados e os horários cadastrados pelo monitor. Oferece `horarios_livres()`, que devolve só os horários da disciplina que não estão cancelados nem lotados.
 - **Horario** (`horario.py`): representa um atendimento de 30 minutos de um monitor em uma disciplina. Guarda data e hora de início, tipo (individual ou grupo), capacidade (1 no individual, definida pelo monitor no grupo), se está cancelado e as reservas feitas nele. Responde se ainda tem vaga (`tem_vaga()`) e permite `cancelar()`.
 - **Reserva** (`reserva.py`): liga um estudante a um horário e ao tópico escolhido.
 - **Estudante** (`usuarios.py`, classe abstrata): guarda RA, nome e as reservas da pessoa. Conta quantas reservas ela tem em uma disciplina numa semana. Define o método abstrato `pode_reservar(horario)`.
 - **Aluno** (filha de Estudante): `pode_reservar` aceita qualquer disciplina.
-- **Monitor** (filha de Estudante): guarda a disciplina que monitora (o cadastro de horários fica para a história 2). Como também é aluno, pode reservar horários de outras disciplinas, mas `pode_reservar` recusa horários da própria disciplina.
+- **Monitor** (filha de Estudante): guarda a disciplina que monitora. Como extra, pode cadastrar horários da própria disciplina pelo menu (adianta parte da história 2). Como também é aluno, pode reservar horários de outras disciplinas, mas `pode_reservar` recusa horários da própria disciplina.
 - **Agendamento** (`agendamento.py`): função `marcar_horario(estudante, horario, topico)`, que verifica todas as regras na ordem e cria a reserva. Quando alguma regra falha, lança a exceção `ReservaInvalida` com o motivo. O limite semanal fica na constante `LIMITE_SEMANAL = 3`, fácil de mudar caso o cliente decida outro valor.
 
 ## Testes de aceitação
