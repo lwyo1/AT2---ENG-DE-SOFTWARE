@@ -1,9 +1,11 @@
 import csv
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from agendamento import ReservaInvalida, marcar_horario
+from horario import Horario
 from tela import desenhar_grade
 from usuarios import Aluno, Monitor
+
 
 def login(ra, senha, arq="usuarios.csv"):
     """Confere ra e senha no csv. Retorna a linha do usuario, ou None se nao encontrar."""
@@ -34,28 +36,97 @@ def criar_usuario(dados, materias):
         return Monitor(ra, nome, materia)
     return Aluno(ra, nome)
 
-def menu(usuario, materias):
+def menu(usuario, materias, salvar_estado=None):
     while True:
         print(f"\nOlá, {usuario.nome}!")
         print("1 - Ver horários livres de uma matéria")
         print("2 - Reservar horário")
         print("3 - Minhas reservas")
+        if isinstance(usuario, Monitor):
+            print("4 - Cadastrar horário de monitoria")
         print("0 - Sair")
         opcao = input("Escolha: ")
 
         if opcao == "1":
-            ...
+            ver_horarios_livres(materias)
         elif opcao == "2":
-            reservar_horario(usuario, materias)
+            reservar_horario(usuario, materias, salvar_estado)
         elif opcao == "3":
-            ...
+            mostrar_reservas(usuario)
+        elif opcao == "4" and isinstance(usuario, Monitor):
+            cadastrar_horario_monitoria(usuario, salvar_estado)
         elif opcao == "0":
             break
         else:
             print("Opção inválida.")
 
 
-def reservar_horario(usuario, materias):
+def ver_horarios_livres(materias):
+    if not materias:
+        print("Nenhuma disciplina disponível.")
+        return
+
+    print("\nDisciplinas:")
+    for indice, materia in enumerate(materias, start=1):
+        print(f"{indice} - {materia.nome}")
+
+    materia = _escolher_opcao(materias, "Escolha a disciplina: ")
+    horarios = sorted(materia.horarios_livres(), key=lambda horario: horario.data)
+    if not horarios:
+        print(f"Não há horários livres para {materia.nome}.")
+        return
+
+    print(f"\nHorários livres para {materia.nome}:")
+    for horario in horarios:
+        print(f"{horario.data:%d/%m/%Y %H:%M} ({horario.tipo})")
+
+
+def mostrar_reservas(usuario):
+    if not usuario.reservas:
+        print("Você ainda não tem reservas.")
+        return
+    for reserva in usuario.reservas:
+        print(reserva)
+
+
+def cadastrar_horario_monitoria(monitor, salvar_estado=None):
+    while True:
+        try:
+            data = datetime.strptime(
+                input("Data e hora (DD/MM/AAAA HH:MM): "),
+                "%d/%m/%Y %H:%M",
+            )
+            break
+        except ValueError:
+            print("Data inválida. Use o formato DD/MM/AAAA HH:MM.")
+
+    tipo = _escolher_opcao(
+        ["Individual", "Grupo"],
+        "Tipo de horário (1 - Individual, 2 - Grupo): ",
+    )
+    capacidade = 1
+    if tipo == "Grupo":
+        while True:
+            try:
+                capacidade = int(input("Capacidade do grupo (mínimo 2): "))
+            except ValueError:
+                print("Digite um número válido.")
+                continue
+            if capacidade >= 2:
+                break
+            print("A capacidade do grupo deve ser pelo menos 2.")
+
+    horario = Horario(monitor.materia, monitor, data, capacidade)
+    monitor.materia.adicionar_horario(horario)
+    if salvar_estado is not None:
+        salvar_estado()
+    print(
+        f"Horário de monitoria cadastrado para "
+        f"{data:%d/%m/%Y %H:%M} ({horario.tipo})."
+    )
+
+
+def reservar_horario(usuario, materias, salvar_estado=None):
     if not materias:
         print("Nenhuma disciplina disponível.")
         return
@@ -90,12 +161,14 @@ def reservar_horario(usuario, materias):
     topico = _escolher_opcao(materia.topicos, "Escolha o tópico: ")
 
     try:
-        marcar_horario(usuario, horario, topico)
+        reserva = marcar_horario(usuario, horario, topico)
     except ReservaInvalida as erro:
         print(f"Não foi possível marcar o horário: {erro}")
         return
 
-    print("Horário marcado com sucesso.")
+    if salvar_estado is not None:
+        salvar_estado()
+    print(reserva)
 
 
 def _escolher_opcao(opcoes, mensagem):

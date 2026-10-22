@@ -1,4 +1,5 @@
 from datetime import timedelta
+from uuid import uuid4
 
 DURACAO = timedelta(minutes=30)
 
@@ -11,6 +12,7 @@ class Horario:
         
         self.materia = materia
         self.monitor = monitor
+        self.id = uuid4().hex
         self.data = data
         self.capacidade = capacidade
         self.cancelado = False
