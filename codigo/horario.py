@@ -34,9 +34,8 @@ class Horario:
     
     def esta_livre(self):
         """Livre = nao cancelado e com vaga. Usado na listagem da materia."""
-        if not self.cancelado and self.tem_vaga():
-            return True
-        return False
+        return not self.cancelado and self.tem_vaga()
+
     
     def adicionar_reserva(self, reserva):
         self.reservas.append(reserva)
