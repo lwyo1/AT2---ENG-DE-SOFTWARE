@@ -159,7 +159,7 @@ class TestCriterio4LimiteSemanal(CenarioBase):
     def test_limite_ignora_outra_disciplina(self):
         #Preparar 3 horarios na mesma semana e 1 de outra disciplina
         self.reservar_tres_horarios_mesma_semana()
-        h4 = self.novo_horario(13, dia=22)  # mesma semana, outra disciplina
+
         
         outra_disciplina = Materia("Física", ["Cinemática"])
         h4 = Horario(outra_disciplina, self.monitor, datetime(2026, 10, 22, 13, 0))
